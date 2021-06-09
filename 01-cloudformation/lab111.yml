@@ -4,6 +4,6 @@ Description: >
   create an AWS Simple Storage Service (S3) Bucket.
 
 Resources:
-  lab111s3:
-    Type: "AWS:S3::Bucket"
+  S3LabBucket:
+    Type: AWS::S3::Bucket
 
