@@ -2,8 +2,15 @@
 Description: >
   Create the *most minimal CFN template possible* that can be used to
   create an AWS Simple Storage Service (S3) Bucket.
-
+Parameters:
+  S3BucketName:
+    Type: String 
 Resources:
   S3LabBucket:
     Type: AWS::S3::Bucket
+    Properties:
+        BucketName: 
+          Ref: S3BucketName
 
+
+    
