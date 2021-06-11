@@ -1,0 +1,10 @@
+[
+    {
+      "ParameterKey": "UserName",
+      "ParameterValue": "nerdprac-import"
+    },
+    {
+      "ParameterKey": "StackPolicy",
+      "ParameterValue": "holmesdemolab"
+    }
+]
