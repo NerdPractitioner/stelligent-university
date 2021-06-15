@@ -16,4 +16,4 @@ Resources:
       UserName: !Ref UserName
       ManagedPolicyArns:
         - !ImportValue 
-          Fn::Sub: '${StackPolicy}-PolicyARN'
+          Fn::Sub: '${StackPolicy}-policy-arn'

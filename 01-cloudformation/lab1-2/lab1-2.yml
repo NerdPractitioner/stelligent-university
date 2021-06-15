@@ -15,7 +15,7 @@ Resources:
     Type: AWS::IAM::ManagedPolicy
     Properties: 
       Description: Allows read only to all S3 buckets 
-      ManagedPolicyName: S3Read
+      ManagedPolicyName: holmesdemolab
       PolicyDocument:
         Version: "2012-10-17"
         Statement:
@@ -33,4 +33,4 @@ Outputs:
     Description: The ARN of the created IAM policy
     Value: !Ref DemoPolicy
     Export:
-      Name: !Join [ "-", [ !Ref "AWS::StackName", PolicyARN ] ]
+      Name: !Join [ "-", [ !Ref "AWS::StackName", 'policy-arn' ] ]
