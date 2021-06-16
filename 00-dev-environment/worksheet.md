@@ -14,6 +14,15 @@ Which AWS environment variable cannot be set in order to run the
 #### Answer 
 When I tried setting an mfa token in my profile it seemed to cause issues when I tried cli commands. I'm assuming because the token will be expired by the time you try to use it. 
 
+### Question: Environments
+Running the two commands in lab 0.1.1 and lab 0.1.3 should have shown the same results. What does this tell you about the access the keys give you on your laptop and the access you have in the Cloud9 environment? What other methods are there to provide this level of access without using keys?
+
+#### Answer
+The Cloud9 environment doesn't need to verify an mfa token to run cli commands. I'm assuming this is because it has its own resource access policy associated. I had to do some minor networking work to set it in a public vpc subnet but it wasn't necessary to manage any profiles or keys. I'm not sure how else you would give this level of access to an mfa enabled account that wouldn't require token verification. 
+
 
 ## helloworld app explaination
 This is a django python app. There is a virtual environment in the file structure that you can use to make migrations and run a server to demo. I can include more detailed instructions if needed. I set amazonaws.com as an allowed-host so it can be ran from cloud9 which was something new I learned about. Cloud9 will provide an IP address for you to visit that simulates localhost.
+
+
+
