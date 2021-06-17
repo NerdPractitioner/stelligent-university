@@ -10,3 +10,5 @@ __pycache__
 *.code-workspace
 
 .ruby-version
+.01-cloudformation/lab1-3/envcf/*
+.00-dev-environment/helloworld/myenv/*
