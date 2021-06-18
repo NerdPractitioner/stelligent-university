@@ -121,10 +121,15 @@ Add an object to your bucket:
 
 _How would you copy the contents of the directory to the top level of your bucket?_
 
+> Answer: you can use aws s3 localdir S3://bucket --recursive
+
 ##### Question: Directory Copying
 
 _How would you copy the contents and include the directory name in the s3 object
 paths?_
+
+> Answer: I couldn't find a way to do this with cp but sync worked with aws s3 sync .  s3://stelligent-u-matthew.holmes.labs 
+> Although that everything in this module directory. I couldn't find a way to copy just one whole directory intact
 
 ##### Question: Object Access
 
@@ -132,9 +137,13 @@ _[Can anyone else see your file yet](https://docs.aws.amazon.com/AmazonS3/latest
 
 For further reading, see the S3 [Access Policy Language Overview](https://docs.aws.amazon.com/AmazonS3/latest/dev/access-policy-language-overview.html).
 
+> Answer: By default s3 buckets and objects are private
+
 ##### Question: Sync vs Copy
 
 _What makes "sync" a better choice than "cp" for some S3 uploads?_
+
+> sync seemed better for working with multiple objects as well as updating existing objects which copy didn't do. 
 
 #### Lab 2.1.3: Exclude Private Objects When Uploading to a Bucket
 
@@ -150,6 +159,8 @@ bucket again **without including the private file**.
 
 Clean up: remove your bucket. What do you have to do before you can
 remove it?
+
+> A: Objects have to be removed before deleting a bucket
 
 ### Retrospective 2.1
 
