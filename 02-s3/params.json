@@ -1,0 +1,6 @@
+[
+  {
+    "ParameterKey": "BucketNameParam",
+    "ParameterValue": "param-holmes-demo-bucket"
+  }
+]
