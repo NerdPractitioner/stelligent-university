@@ -60,7 +60,7 @@ Resources:
         - Sid: Enable IAM policies
           Effect: Allow
           Principal:
-            AWS: arn:aws:iam::324320755747:root
+            AWS: 324320755747
           Action: kms:*
           Resource: "*"
   TheKeyAlias:
