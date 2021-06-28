@@ -1,10 +1,10 @@
-# Questions and Answers
+# Questions and Answers 
 
-#### Question: Why YAML
+#### Question: Why YAML 
 
 _Why do we prefer the YAML format for CFN templates?_
 
-##### Answer:
+##### Answer: 
 
 Yaml is generally easier and faster to write and takes less characters. 
 It also allows for the use of conditional logic and self referencing.
@@ -14,7 +14,7 @@ Yaml has many other dynamic features that JSON doesn't support and can parse jso
 
 _What else can you do to prevent resources in a stack from being deleted?_
 
-##### Answer:
+##### Answer: 
 
 - You can set the deletion policy attribute to Retain or Snapshot
 - You can use IAM policies to restrict users from being able to delete stack resources
@@ -31,7 +31,7 @@ For instance, if you set the deletion policy to Retain, the stack will still be 
 
 
 
-#### Question: Portability
+#### Question: Portability 
 
 _Can you list 4 features of CloudFormation that help make a CFN template
 portable code?_
@@ -40,14 +40,14 @@ portable code?_
 
 
 
-###Tasks
+###Tasks 
 
-#### Task: String Substitution
+#### Task: String Substitution 
 
 Demonstrate 2 ways to code string combination/substitution using
 built-in CFN functions.
 
-##### MyWork
+##### MyWork 
 
 - Fn::Join and/or !Join in Yaml allows you to combine string values and variables into a single value
 -- EX. Fn::Join: [ delimiter, [ comma-delimited list of values ] ]
@@ -67,14 +67,14 @@ built-in CFN functions.
           /opt/aws/bin/cfn-init -v --stack ${AWS::StackName} --resource LaunchConfig --configsets wordpress_install --region ${AWS::Region}
           /opt/aws/bin/cfn-signal -e $? --stack ${AWS::StackName} --resource WebServerGroup --region ${AWS::Region}
 
-#### Task: Policy Tester
+#### Task: Policy Tester 
 
 Show how to use the IAM policy tester to demonstrate that the user
 cannot perform 'Put' actions on any S3 buckets.
 
 -
 
-#### Task: SSM Parameter Store
+#### Task: SSM Parameter Store 
 
 Using the AWS Console, create a Systems Manager Parameter Store
 parameter in the same region as the first Stack, and provide a value for
@@ -84,7 +84,7 @@ first stack. Finally, tear it down.
 
 - 
 
-#### Task: DRYer Code
+#### Task: DRYer Code 
 
 How reusable is your SDK-orchestration code? Did you share a single
 method to load the configuration file for both stack creation/updating
