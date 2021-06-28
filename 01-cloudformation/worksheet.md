@@ -1,3 +1,5 @@
+# Questions and Answers
+
 #### Question: Why YAML
 
 _Why do we prefer the YAML format for CFN templates?_
