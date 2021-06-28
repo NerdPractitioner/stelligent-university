@@ -114,12 +114,10 @@ authorized to in the labs account. These tokens will last approximately
 What method did you use to store the aws credentials?  What are some other
 options?
 
-
 ###### Question 0.1.1: 2
 
 Which AWS environment variable cannot be set in order to run the
 `aws sts get-session-token` command?
-
 
 ##### Option 2: Using AWS Vault to automatically handle your temporary tokens
 
