@@ -11,7 +11,7 @@ It also allows for the use of conditional logic and self referencing.
 Yaml has many other dynamic features that JSON doesn't support
 and can parse json as well if needed.
 
-#### Question: Protecting Resources
+## Question: Protecting Resources
 
 _What else can you do to prevent resources in a stack from being deleted?_
 
@@ -27,8 +27,9 @@ _How is that different from applying Termination Protection?_
 ### Answer 3
 
 Termination protection will cause a stack deletion to fail.
-The other options seem to provide more granular control of what can and can't be deleted.
-For instance, if you set the deletion policy to Retain, the stack will still be deleted but the resources will remain.
+The other options seem to provide more granular control of what can deleted.
+For instance, if you set the deletion policy to Retain,
+the stack will still be deleted but the resources will remain.
 
 ## Question: Portability
 
@@ -43,7 +44,7 @@ Demonstrate 2 ways to code string combination/substitution using
 built-in CFN functions.
 
 #### MyWork
-`
+```
 - Fn::Join and/or !Join in Yaml allows you to combine string values and variables into a single value
 - EX. Fn::Join: [ delimiter, [ comma-delimited list of values ] ]
 - Used several times in labs for concatenating names using region, AZ, string value, etc.
@@ -61,4 +62,4 @@ built-in CFN functions.
           yum update -y aws-cfn-bootstrap
           /opt/aws/bin/cfn-init -v --stack ${AWS::StackName} --resource LaunchConfig --configsets wordpress_install --region ${AWS::Region}
           /opt/aws/bin/cfn-signal -e $? --stack ${AWS::StackName} --resource WebServerGroup --region ${AWS::Region}
-`
+```
