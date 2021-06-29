@@ -70,7 +70,7 @@ while filling in referenced variables from elsewhere in the script
           --resource LaunchConfig
           --configsets wordpress_install
           --region ${AWS::Region}
-          
+
           /opt/aws/bin/cfn-signal -e $? --stack ${AWS::StackName}
           --resource WebServerGroup
           --region ${AWS::Region}
