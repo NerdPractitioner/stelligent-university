@@ -7,7 +7,7 @@ What method did you use to store the aws credentials?  What are some other optio
 ### Answer 1
 
 Using aws-vault was the easiest for me.
-I attempted to automate setting the environment variables in bash 
+I attempted to automate setting the environment variables in bash
 but that isn't a strong area of mine. I was able to use aws configure set commands
 to set the access and secret access keys but I believe this requires the aws config
 and credentials files to exist already. I could do some conditional logic to check

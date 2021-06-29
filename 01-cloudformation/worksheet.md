@@ -59,20 +59,20 @@ while filling in referenced variables from elsewhere in the script
       ManagedPolicyArns:
         - !ImportValue
           Fn::Sub: '${StackPolicy}-policy-arn'
-- Seems to be most useful for simplifying large data structure. 
+- Seems to be most useful for simplifying large data structure.
   Example in docs provides instance UserData
     UserData:
       Fn::Base64:
         !Sub |
           #!/bin/bash -xe
           yum update -y aws-cfn-bootstrap
-          /opt/aws/bin/cfn-init -v --stack ${AWS::StackName} 
-          --resource LaunchConfig 
-          --configsets wordpress_install 
+          /opt/aws/bin/cfn-init -v --stack ${AWS::StackName}
+          --resource LaunchConfig
+          --configsets wordpress_install
           --region ${AWS::Region}
           
-          /opt/aws/bin/cfn-signal -e $? --stack ${AWS::StackName} 
-          --resource WebServerGroup 
+          /opt/aws/bin/cfn-signal -e $? --stack ${AWS::StackName}
+          --resource WebServerGroup
           --region ${AWS::Region}
 
 ```
