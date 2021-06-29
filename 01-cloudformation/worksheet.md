@@ -44,7 +44,9 @@ Demonstrate 2 ways to code string combination/substitution using
 built-in CFN functions.
 
 #### MyWork
+
 ```
+
 - Fn::Join and/or !Join in Yaml allows you to combine string values and variables into a single value
 - EX. Fn::Join: [ delimiter, [ comma-delimited list of values ] ]
 - Used several times in labs for concatenating names using region, AZ, string value, etc.
@@ -62,4 +64,5 @@ built-in CFN functions.
           yum update -y aws-cfn-bootstrap
           /opt/aws/bin/cfn-init -v --stack ${AWS::StackName} --resource LaunchConfig --configsets wordpress_install --region ${AWS::Region}
           /opt/aws/bin/cfn-signal -e $? --stack ${AWS::StackName} --resource WebServerGroup --region ${AWS::Region}
+          
 ```
