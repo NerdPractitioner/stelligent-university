@@ -17,7 +17,7 @@ Resources:
           - BucketKeyEnabled: true
             ServerSideEncryptionByDefault:
               SSEAlgorithm: 'aws:kms'
-              KMSMasterKeyID: !Ref stellu-key
+              KMSMasterKeyID: !Ref DemoKey
       VersioningConfiguration:
         Status: Enabled
       LifecycleConfiguration:
