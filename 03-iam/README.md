@@ -267,6 +267,8 @@ Describe how that could easily be demonstrated with both a
 [positive and negative testing](https://www.guru99.com/positive-vs-negative-testing.html)
 approach._
 
+> Answer: you can use negative testing to with policy simulator to check if a role can do something that the policy shouldn't allow
+
 ## Lesson 3.3: Fine-Grained Controls With Policies
 
 ### Principle 3.3
