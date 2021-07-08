@@ -168,6 +168,8 @@ stack's two roles in order to pass those values to the CLI function. You
 probably used the AWS web console to get the ARN for each role. What
 could you have done to your CFN template to make that unnecessary?_
 
+> Use the output section and reference them by name in the CLI function
+
 #### Task: Stack Outputs
 
 Institute that change from the Question above. Recreate the stack as per
@@ -259,6 +261,8 @@ _In the context of an AWS User or Role, what is the difference between
 an inline policy and a customer managed policy? What are the differences
 between a customer managed policy and an AWS managed policy?_
 
+> Answer: Inline policies are less modular/re-usable but allow for the most specific control. The other two cover a whole category and seem to be the prefered solution in most situations. Customer managed giving more granular control than aws managed obviously.
+
 #### Question: Role Assumption
 
 _When assuming a role, are the permissions of the initial principal
@@ -267,7 +271,11 @@ Describe how that could easily be demonstrated with both a
 [positive and negative testing](https://www.guru99.com/positive-vs-negative-testing.html)
 approach._
 
-> Answer: you can use negative testing to with policy simulator to check if a role can do something that the policy shouldn't allow
+> Answer: According to the [docs](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_temp_control-access_assumerole.html) the initial credentials are not evaluated when assuming a role. 
+
+> Negative testing can be to assume the role and attempt (or simulate attempting) to do something shouldn't be allowed in the role. It can also be attempting to do something that should only be allowed by the role but without assuming the role. 
+
+> Positive testing would just be assuming the role and making sure you can perform the actions that it allows.
 
 ## Lesson 3.3: Fine-Grained Controls With Policies
 
@@ -358,6 +366,8 @@ tests]](https://smartbear.com/learn/automated-testing/negative-testing/)
 that could be automated in order to confirm the permissions for the
 Role?_
 
+> Answer: 
+
 #### Task: Positive and Negative Tests
 
 Code at least one new positive and one new negative test.
@@ -367,6 +377,8 @@ Code at least one new positive and one new negative test.
 _Is it possible to limit uploads of objects with a specific prefix (e.g.
 starting with "lebowski/") to an S3 bucket using IAM conditions? If not, how else
 could this be accomplished?_
+
+> It looks like this can be done by inserting a condition in a role policy or appending the prefix to the ARN of the bucket with the action of allow
 
 #### Task: Limiting Uploads
 

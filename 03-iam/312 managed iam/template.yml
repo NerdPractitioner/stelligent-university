@@ -1,21 +1,7 @@
-  
 AWSTemplateFormatVersion: 2010-09-09
-Description: "Creates an IAM user for Stelligent-U Topic 3: IAM Practice 3.1.3"
+Description: Creates an iam role with a managed iam policy
 Resources: 
-  iamRole:
-    Type: AWS::IAM::Role
-    Properties:
-      RoleName: holmesdemolabrole
-      AssumeRolePolicyDocument:
-        Version: "2012-10-17"
-        Statement:
-          - Effect: Allow
-            Principal:
-              Service:
-                - ec2.amazonaws.com
-            Action:
-              - 'sts:AssumeRole'
-  LabIAMRole:
+  DemoIamRole:
     Type: AWS::IAM::Role
     Properties:
       RoleName: holmesdemorole
@@ -28,11 +14,11 @@ Resources:
                 - ec2.amazonaws.com
             Action:
               - 'sts:AssumeRole'
-  iamPolicy:
+  DemoIamPolicy:
     Type: AWS::IAM::ManagedPolicy
     Properties: 
-      Description: "Managed policy for stelligent u, multiple roles"
-      ManagedPolicyName: holmesdemolab
+      Description: "Managed policy for holmes practice"
+      ManagedPolicyName: holmesdemopolicy
       PolicyDocument:
           Version: '2012-10-17'
           Statement:
@@ -42,6 +28,5 @@ Resources:
             - iam:List*
             Resource:
             - '*'
-      Roles: 
-        - !Ref iamRole
-        - !Ref LabIAMRole
+      Users: 
+        - !Ref DemoiamRole

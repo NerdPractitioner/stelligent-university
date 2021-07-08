@@ -1,7 +1,22 @@
+  
 AWSTemplateFormatVersion: 2010-09-09
-Description: "Creates an iam role with a managed iam policy"
+Description: Update the template further to demonstrate reuse of the customer managed
+policy
 Resources: 
-  DemoIamRole:
+  iamRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: holmesdemolabrole
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - ec2.amazonaws.com
+            Action:
+              - 'sts:AssumeRole'
+  LabIAMRole:
     Type: AWS::IAM::Role
     Properties:
       RoleName: holmesdemorole
@@ -14,11 +29,11 @@ Resources:
                 - ec2.amazonaws.com
             Action:
               - 'sts:AssumeRole'
-  DemoIamPolicy:
+  iamPolicy:
     Type: AWS::IAM::ManagedPolicy
     Properties: 
-      Description: "Managed policy for bgar IAM lab"
-      ManagedPolicyName: holmesdemopolicy
+      Description: "Managed reusable policy"
+      ManagedPolicyName: holmesdemolab
       PolicyDocument:
           Version: '2012-10-17'
           Statement:
@@ -28,5 +43,6 @@ Resources:
             - iam:List*
             Resource:
             - '*'
-      Users: 
-        - !Ref DemoiamRole
+      Roles: 
+        - !Ref iamRole
+        - !Ref LabIAMRole

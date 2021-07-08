@@ -1,5 +1,5 @@
 AWSTemplateFormatVersion: 2010-09-09
-Description: "Create a CFN template that specifies an IAM Role. Uses inline policy"
+Description: Create a CFN template that specifies an IAM Role. Uses inline policy
 Resources: 
   DemoiamRole:
     Type: AWS::IAM::Role

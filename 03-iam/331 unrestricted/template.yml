@@ -1,0 +1,29 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: Create a CFN template that generates two S3 buckets and a Role, and
+demonstrate you have full access to each bucket with this new role.
+Resources:
+   S3role:
+      Type: AWS::IAM::Role
+      Properties:
+        AssumeRolePolicyDocument:
+          Version: 2012-10-17
+          Statement:
+          - Effect: Allow
+            Principal: 
+              AWS: arn:aws:iam::324320755747:user/matthew.holmes.labs
+            Action: "sts:AssumeRole"
+        ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/AmazonS3FullAccess
+        RoleName: iam-ro-s3
+   S3Bucket1:
+      Type: AWS::S3::Bucket
+      Properties: 
+        BucketName: unrestricted.holmesdemo1
+   S3Bucket2:
+      Type: AWS::S3::Bucket
+      Properties: 
+        BucketName: unrestricted.holmesdemo2
+Outputs:
+  RoleArn:
+     Description: Arn of s3fullaccess
+     Value: !GetAtt S3role.Arn
