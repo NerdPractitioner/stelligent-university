@@ -1,0 +1,35 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: Add a conditional restriction to the role's policy. Provide a condition
+that grants list access only to objects that start with "lebowski/".
+Resources:
+   MyS3Bucket:
+      Type: AWS::S3::Bucket
+      Properties: 
+        BucketName: holmesdemobucket
+   S3role:
+      Type: AWS::IAM::Role
+      Properties:
+        AssumeRolePolicyDocument:
+          Version: 2012-10-17
+          Statement:
+          - Effect: Allow
+            Principal: 
+              AWS: arn:aws:iam::324320755747:user/matthew.holmes.labs
+            Action: "sts:AssumeRole"
+        Policies:
+          - PolicyDocument:
+              Version: 2012-10-17
+              Statement:
+              - Effect: Allow
+                Action: 's3:List*'
+                Resource: arn:aws:s3:::holmesdemobucket
+                # task: Limiting uploads
+                Condition:
+                  StringEquals:
+                    s3:prefix: 'lebowski/'
+            PolicyName: s3prefixpol
+        RoleName: iam-s3-prefix
+Outputs:
+  RoleArn:
+     Description: ARN of s3fullaccess
+     Value: !GetAtt S3role.Arn

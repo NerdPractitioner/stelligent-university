@@ -1,0 +1,48 @@
+  
+AWSTemplateFormatVersion: 2010-09-09
+Description: Update the template further to demonstrate reuse of the customer managed
+policy
+Resources: 
+  iamRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: holmesdemolabrole
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - ec2.amazonaws.com
+            Action:
+              - 'sts:AssumeRole'
+  LabIAMRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: holmesdemorole
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - ec2.amazonaws.com
+            Action:
+              - 'sts:AssumeRole'
+  iamPolicy:
+    Type: AWS::IAM::ManagedPolicy
+    Properties: 
+      Description: "Managed reusable policy"
+      ManagedPolicyName: holmesdemolab
+      PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+          - Effect: Allow
+            Action:
+            - iam:Get*
+            - iam:List*
+            Resource:
+            - '*'
+      Roles: 
+        - !Ref iamRole
+        - !Ref LabIAMRole
