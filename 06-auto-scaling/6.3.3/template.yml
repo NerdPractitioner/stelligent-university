@@ -1,0 +1,103 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Description: EC2 instance launch template for ASG
+
+Resources:
+#launch template
+   DemoLaunchTemplate: 
+      Type: AWS::EC2::LaunchTemplate
+      Properties: 
+        LaunchTemplateData: 
+          ImageId: ami-0ad5ff77f22908651
+          InstanceType: c5.large
+          KeyName: HolmesLab
+          TagSpecifications: 
+          - ResourceType: instance
+            Tags: 
+            - Key: user
+              Value: matthew.holmes.labs
+          SecurityGroupIds:
+          - !GetAtt DemoSecurityGroup.GroupId 
+#auto scaling group
+   DemoASG:
+        Type: AWS::AutoScaling::AutoScalingGroup
+        Properties: 
+          AvailabilityZones:
+          - us-east-1a
+          DesiredCapacity: "1"
+          HealthCheckType: EC2
+          Cooldown: "60"
+          LaunchTemplate:
+            LaunchTemplateId: !Ref DemoLaunchTemplate
+            Version: !GetAtt DemoLaunchTemplate.LatestVersionNumber
+          MaxSize: "3"
+          MinSize: "1"
+          Tags: 
+          - Key: user
+            Value: matthew.holmes.labs
+            PropagateAtLaunch: true
+          VPCZoneIdentifier:
+          - subnet-0044bef0a98e97bed
+        UpdatePolicy:
+           AutoScalingReplacingUpdate:
+              WillReplace: true
+#cloudwatch alarms
+   DemoCloudWatchAlarm:
+          Type: AWS::CloudWatch::Alarm
+          Properties: 
+            AlarmActions: 
+            - !Ref DemoAutoScalingPolicy
+            AlarmDescription: scale when CPU > 60% over a period of 2min
+            ComparisonOperator: GreaterThanThreshold
+            EvaluationPeriods: 2
+            MetricName: CPUUtilization
+            Threshold: 60
+            Namespace: AWS/EC2
+            Period: 60
+            Statistic: Average
+            Dimensions:
+            - Name: "Demoasgrule"
+              Value: !Ref DemoASG 
+   DemoCloudWatchAlarmScaleIn:
+          Type: AWS::CloudWatch::Alarm
+          Properties: 
+            AlarmActions: 
+            - !Ref DemoAutoScalingPolicy
+            AlarmDescription: scale in when CPU < 40% over a period of 2min
+            ComparisonOperator: LessThanThreshold
+            EvaluationPeriods: 2
+            MetricName: CPUUtilization
+            Threshold: 60
+            Namespace: AWS/EC2
+            Period: 60
+            Statistic: Average
+            Dimensions:
+            - Name: "Demoasgrule"
+              Value: !Ref DemoASG             
+#auto scaling policy
+   DemoAutoScalingPolicy:
+          Type: AWS::AutoScaling::ScalingPolicy
+          Properties: 
+            AdjustmentType: ChangeInCapacity
+            AutoScalingGroupName: !Ref DemoASG
+            PolicyType: TargetTrackingScaling
+            TargetTrackingConfiguration: 
+                DisableScaleIn: false
+                PredefinedMetricSpecification: 
+                  PredefinedMetricType: ASGAverageCPUUtilization
+                TargetValue: 1.0
+#security group
+   DemoSecurityGroup:
+      Type: AWS::EC2::SecurityGroup
+      Properties: 
+        GroupDescription: Allow ssh trafic
+        SecurityGroupIngress: 
+        - Description: Allow SSH trafic from everywhere
+          CidrIp: 0.0.0.0/0
+          IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+        Tags: 
+        - Key: user
+          Value: matthew.holmes.labs
+

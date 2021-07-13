@@ -1,0 +1,47 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Description: EC2 instance launch template for ASG
+
+Resources:
+   DemoEc2Debian:
+     Type: AWS::EC2::Instance           
+     Properties:
+        ImageId: ami-0ad5ff77f22908651
+        InstanceType: t2.micro
+        KeyName: HolmesLab
+        SecurityGroupIds:
+        - !Ref DemoSecurityGroup
+   DemoElacticIP:
+      Type: AWS::EC2::EIP
+      Properties: 
+        Domain: vpc
+        InstanceId: !Ref DemoEc2Debian
+        Tags: 
+            - Key: user
+              Value: matthew.holmes.labs
+   DemoSecurityGroup:
+      Type: AWS::EC2::SecurityGroup
+      Properties: 
+        GroupDescription: Allow ICMP trafic
+        SecurityGroupIngress: 
+        - Description: Allow all traffic from ICMP from everywhere
+          CidrIp: 0.0.0.0/0
+          IpProtocol: icmp
+          FromPort: -1
+          ToPort: -1
+        - Description: Allow SSH trafic from anywhere
+          CidrIp: 0.0.0.0/0
+          IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+        Tags: 
+        - Key: user
+          Value: matthew.holmes.labs
+
+Outputs:
+  ElasticIP:
+     Description: Demo instance, elastic ip
+     Value: !Ref DemoElacticIP
+  InstanceId:
+     Description: Demo instance private ip
+     Value: !Ref DemoEc2Debian

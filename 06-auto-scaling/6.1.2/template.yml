@@ -1,0 +1,31 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Description: EC2 instance launch template for ASG
+
+Resources:
+   ASGLaunchConfig:
+        Type: AWS::AutoScaling::LaunchConfiguration
+        Properties: 
+          AssociatePublicIpAddress: true
+          ImageId: ami-0ad5ff77f22908651
+          InstanceMonitoring: false
+          InstanceType: t2.micro
+          KeyName: HolmesLab
+   DemoAutoScalingGroup:
+        Type: AWS::AutoScaling::AutoScalingGroup
+        Properties: 
+          AutoScalingGroupName: holmesasg
+          AvailabilityZones:
+          - us-east-1a
+          DesiredCapacity: "1"
+          HealthCheckType: EC2
+          LaunchConfigurationName: !Ref ASGLaunchConfig
+          MaxSize: "2"
+          MinSize: "1"
+          Tags: 
+          - Key: user
+            Value: matthew.holmes.labs
+            PropagateAtLaunch: true
+          VPCZoneIdentifier:
+          # would prefer to import or parameterize 
+          - subnet-0044bef0a98e97bed 
