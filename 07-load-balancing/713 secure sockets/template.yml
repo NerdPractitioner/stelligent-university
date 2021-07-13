@@ -1,0 +1,154 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Resources:
+#auto scaling group
+  DemoWebServerAsg:
+    Type: 'AWS::AutoScaling::AutoScalingGroup'
+    Properties:
+      AutoScalingGroupName: 'HolmesAutomationBoxes'
+      VPCZoneIdentifier:
+        - subnet-0044bef0a98e97bed
+        - subnet-005433d8b68b28820
+      DesiredCapacity: '3'
+      HealthCheckType: 'ELB'
+      HealthCheckGracePeriod: 30 
+      LaunchConfigurationName: !Ref DemoWebServersLC
+      MaxSize: '3'
+      MinSize: '3'
+      TargetGroupARNs: 
+      - !Ref DemoApplicationLoadBalancerTargetGrp
+      - !Ref DemoApplicationLoadBalancerTargetGrpHttps 
+
+#load balancer target group http 
+  DemoApplicationLoadBalancerTargetGrp:
+    Type: AWS::ElasticLoadBalancingV2::TargetGroup
+    Properties: 
+      HealthCheckEnabled: true
+      HealthCheckIntervalSeconds: 15
+      HealthCheckPath: /index.html
+      HealthCheckPort: traffic-port
+      HealthCheckProtocol: HTTP
+      HealthCheckTimeoutSeconds: 6
+      HealthyThresholdCount: 5
+      Name: DemoalbTargetGroup
+      Port: 80
+      Protocol: HTTP
+      Tags: 
+        - Key: user
+          Value: matthew.holmes.labs
+      TargetType: instance
+      UnhealthyThresholdCount: 2
+      VpcId: vpc-0e0ee2b40251a4f7b
+
+#load balancer target group https
+  DemoApplicationLoadBalancerTargetGrpHttps:
+    Type: AWS::ElasticLoadBalancingV2::TargetGroup
+    Properties: 
+      HealthCheckEnabled: true
+      HealthCheckIntervalSeconds: 20
+      HealthCheckPath: /index.html
+      HealthCheckProtocol: HTTP
+      Name: DemoalbTargetGroupHttps
+      Port: 80
+      Protocol: HTTP
+      Tags: 
+        - Key: user
+          Value: matthew.holmes.labs
+      TargetType: instance
+      UnhealthyThresholdCount: 3
+      VpcId: vpc-0e0ee2b40251a4f7b
+
+#application load balancer
+  DemoAppLoadBalancer:
+    Type: AWS::ElasticLoadBalancingV2::LoadBalancer
+    Properties: 
+      IpAddressType: ipv4
+      Scheme: internet-facing
+      SecurityGroups: 
+        - sg-091633ff1c3f17f9a
+      Subnets: 
+        - subnet-0044bef0a98e97bed
+        - subnet-005433d8b68b28820
+      Tags: 
+        - Key: user
+          Value: matthew.holmes.labs
+      Type: application
+
+#load balancing listener
+  DemoAlbListener:
+    Type: AWS::ElasticLoadBalancingV2::Listener
+    Properties: 
+      DefaultActions: 
+      - TargetGroupArn: !Ref DemoApplicationLoadBalancerTargetGrp
+        Type: forward
+      LoadBalancerArn: !Ref DemoAppLoadBalancer
+      Port: 80
+      Protocol: HTTP
+
+#load balancing listener https
+  DemoAlbListenerHttps:
+      Type: AWS::ElasticLoadBalancingV2::Listener
+      Properties: 
+        DefaultActions: 
+        - TargetGroupArn: !Ref DemoApplicationLoadBalancerTargetGrpHttps
+          Type: forward
+        LoadBalancerArn: !Ref DemoAppLoadBalancer
+        Certificates:
+        - CertificateArn: arn:aws:acm:us-east-1:324320755747:certificate/51ff2ea2-bf3a-4f17-8ea6-f257cfc5c6ae
+        SslPolicy: 'ELBSecurityPolicy-FS-2018-06'
+        Port: 443
+        Protocol: HTTPS
+
+#auto scaling launch config
+  DemoWebServersLC:
+    Type: 'AWS::AutoScaling::LaunchConfiguration'
+    Properties:
+      ImageId: ami-0000025f7c02a13b2
+      InstanceType: t2.micro
+      LaunchConfigurationName: DemoWebServerLC
+      SecurityGroups:
+        - sg-091633ff1c3f17f9a
+      UserData: 
+        Fn::Base64:
+          Fn::Sub: |
+            #!/bin/bash -xe
+
+            yum install -y aws-cfn-bootstrap
+
+            # Install the files and packages from the metadata
+            /opt/aws/bin/cfn-init -v \
+              --stack ${AWS::StackName} \
+              --resource DemoWebServersLC \
+              --configsets All \
+              --region ${AWS::Region}
+
+            # Signal the status from cfn-init
+            /opt/aws/bin/cfn-signal -e $? \
+              --stack ${AWS::StackName} \
+              --resource DemoWebServersLC \
+              --region ${AWS::Region}
+    Metadata:
+      'AWS::CloudFormation::Init':
+        configSets:
+          All:
+            - ConfigureStelligentProject
+        ConfigureStelligentProject:
+          packages:
+            yum:
+              nginx: []
+          files:
+            /usr/share/nginx/html/index.html:
+              content: '<p>Automation for the People</p>'
+              mode: '000644'
+              owner: root
+              group: root
+          services:
+            sysvinit:
+              nginx:
+                enabled: 'true'
+                ensureRunning: 'true'
+
+Outputs:
+  DemoLoadBalancerDNSName:
+     Description: load balancer DNS endpoint
+     Value: !GetAtt DemoAppLoadBalancer.DNSName
+
