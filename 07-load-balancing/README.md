@@ -69,6 +69,8 @@ many instances with an ALB.
 _What is the benefit of breaking up the load balancer into specific listeners
 and target groups?_
 
+> More granular control over which protocols and instances are being used
+
 #### Lab 7.1.2: Health Checks
 
 Now, let's update our health check to see what happens when things go
@@ -92,9 +94,15 @@ haywire!
 _What can be controlled with the interval/healthy threshold/unhealthy threshold
 settings?_
 
+> You can control how many tries and for how long to check as well as
+how many bad checks are ok
+
 ##### Question: ASG Behavior
 
 _What's happening to the instances in the ASG? How do you know?_
+
+> the instances are being terminated due to failed health checks.
+we can see this in asg activity
 
 #### Lab 7.1.3: Secure Sockets
 
@@ -118,14 +126,22 @@ Let's fix that bad health check endpoint and add an https listener.
 - Visit your ALB endpoint, add the security exception and enjoy your
   encrypted session.
 
+> Useful command to do using cli with local files
+aws acm import-certificate --certificate file://certificate.pem --private-key file://key.pem
+
 ##### Question: SSL Policy
 
 _What is the trade off of going with a more secure SSL policy?_
+
+> Older browsers may not be able to access the content
 
 ##### Question: Certificate Management
 
 _We imported a local certificate into ACM, what other options do you have? How
 do those processes work?_
+
+> You can use an external provider like letsencrypt and import it, 
+or use an ACM generated certificate. 
 
 #### Lab 7.1.4: Cleanup
 
