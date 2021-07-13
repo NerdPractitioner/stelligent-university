@@ -35,6 +35,7 @@ Resources:
           Tags: 
           - Key: user
             Value: matthew.holmes.labs
+            PropagateAtLaunch: true
           VPCZoneIdentifier:
           - subnet-0044bef0a98e97bed
         UpdatePolicy:

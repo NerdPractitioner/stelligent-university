@@ -1,4 +1,4 @@
- # Topic 6: Auto Scaling
+# Topic 6: Auto Scaling
 
 <!-- TOC -->
 

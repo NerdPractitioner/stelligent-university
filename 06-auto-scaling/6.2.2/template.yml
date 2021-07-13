@@ -15,6 +15,7 @@ Resources:
             Tags: 
             - Key: user
               Value: matthew.holmes.labs
+              PropagateAtLaunch: true
    DemoASG:
         Type: AWS::AutoScaling::AutoScalingGroup
         Properties: 
