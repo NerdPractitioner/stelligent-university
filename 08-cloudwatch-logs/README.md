@@ -112,6 +112,10 @@ as it arrives.
 - Use awslogs to get logs from your group from the last 5 minutes,
   last 20 minutes and last hour.
 
+
+> awslogs get matthew.holmes.c9logs --start='5 minutes'
+
+
 #### Lab 8.1.4: CloudWatch logs lifecycle
 
 Any time you're logging information, it's important to consider the
@@ -120,10 +124,20 @@ lifecycle of the logs.
 - Use the AWS CLI to [set the retention policy](https://docs.aws.amazon.com/cli/latest/reference/logs/put-retention-policy.htm)
   of your log group to 60 days.
 
+> aws logs put-retention-policy --log-group-name matthew.holmes.c9logs --retention-in-days 60
+
 - Use the CLI to review the policy in your log group.
+
+> aws logs describe-log-groups --log-group-name-prefix matthew.holmes.c9logs
 
 - Set the retention policy to the maximum allowed time, and review the
   change again to double-check.
+
+"""
+aws logs delete-retention-policy --log-group-name matthew.holmes.c9logs
+aws logs describe-log-groups --log-group-name-prefix matthew.holmes.c9logs
+"""
+
 
 #### Lab 8.1.5: Clean up
 
@@ -144,8 +158,13 @@ limitations are.*
 
 - What are the minimum and maximum retention times?
 
+> It looks like logs can be stored for 1 day up to indefinately.
+Cloudwatch metrics can be stored for 15 months
+
 - Instead of keeping data in CW Logs forever, can you do anything else
   with them? What might a useful lifecycle for logs look like?
+
+> We can move logs past a certain age to s3
 
 ## Lesson 8.2: CloudWatch Logs with CloudTrail events
 
@@ -206,6 +225,9 @@ for the resources that will use it:
 _What type of events might be important to track in an AWS account? If
 you were automating mitigating actions for the events, what might they
 be and what AWS resource(s) would you use?_
+
+> Creation, deletion, and modification of resources. We could use cloudwatch to trigger sns notifications of things like excessive resource creation.
+
 
 #### Task
 

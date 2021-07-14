@@ -1,0 +1,32 @@
+aws logs create-log-group --log-group-name matthew.holmes.c9logs
+
+aws logs create-log-stream --log-group-name matthew.holmes.c9logs --log-stream-name c9.training
+
+aws logs describe-log-groups --log-group-name-prefix matthew.holmes.c9logs
+
+{
+    "logGroups": [
+        {
+            "arn": "arn:aws:logs:us-east-1:324320755747:log-group:matthew.holmes.c9logs:*", 
+            "creationTime": 1626279407707, 
+            "metricFilterCount": 0, 
+            "logGroupName": "matthew.holmes.c9logs", 
+            "storedBytes": 0
+        }
+    ]
+}
+
+aws logs describe-log-streams --log-group-name matthew.holmes.c9logs
+{
+    "logStreams": [
+        {
+            "creationTime": 1626279415351, 
+            "arn": "arn:aws:logs:us-east-1:324320755747:log-group:matthew.holmes.c9logs:log-stream:c9.training", 
+            "logStreamName": "c9.training", 
+            "storedBytes": 0
+        }
+    ]
+}
+
+aws logs get-log-events --log-group-name matthew.holmes.c9logs --log-stream-name c9.training --region us-east-1
+
