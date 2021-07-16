@@ -56,9 +56,33 @@ Use the AWS KMS CLI to encrypt a plaintext file with a secret message
 (maybe that combo to the safe, or your luggage password). Send your file
 to a colleague with administrator access.
 
+> cmkArn=arn:aws:kms:us-east-1:324320755747:key/37ce2c35-14fa-48ef-b737-0bdbdcfc3d14
+
+"""
+aws-encryption-cli --encrypt \
+                     --input unencrypted.txt \
+                     --wrapping-keys key=$cmkArn \
+                     --metadata-output ~/metadata \
+                     --encryption-context purpose=test \
+                     --commitment-policy require-encrypt-require-decrypt \
+                     --output .
+"""
+
 #### Lab 10.1.4: Decrypt a ciphertext file
 
 Use the KMS CLI to now decrypt a ciphertext file.
+
+"""
+aws-encryption-cli --decrypt \
+                     --input unencrypted.txt.encrypted \
+                     --wrapping-keys key=$cmkArn \
+                     --commitment-policy require-encrypt-require-decrypt \
+                     --encryption-context purpose=test \
+                     --metadata-output ~/metadata \
+                     --max-encrypted-data-keys 1 \
+                     --buffer \
+                     --output .
+"""
 
 ### Retrospective 10.1
 
@@ -67,9 +91,13 @@ Use the KMS CLI to now decrypt a ciphertext file.
 _For decrypting the ciphertext file, why didn't you have to specify a key? How
 did you have permission to decrypt?_
 
+> I believe because I still have the CMK stored.
+
 #### Question: KMS Alias
 
 _Why is it beneficial to use a KMS Alias?_
+
+> An alias can be used to manage multiple CMKs more easily
 
 ## Lesson 10.2: Implementation of KMS Keys in S3
 
