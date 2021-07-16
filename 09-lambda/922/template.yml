@@ -1,0 +1,202 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Description: Lamdba hello AWS function
+
+Resources: 
+    LambdaDemoRole:
+      Type: AWS::IAM::Role
+      Properties: 
+        AssumeRolePolicyDocument:
+           Version: 2012-10-17
+           Statement:
+           - Effect: Allow
+             Principal:
+                Service: lambda.amazonaws.com
+             Action: sts:AssumeRole
+        Description: Lambda execution role
+        ManagedPolicyArns: 
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+        RoleName: !Join ["",[!Ref AWS::Region, Demolambda-role ]] 
+        Tags: 
+          - Key: user
+            Value: matthew.holmes.labs
+    
+    HelloAWSFunction:
+        Type: AWS::Lambda::Function
+        Properties: 
+          Code: 
+            ZipFile: |
+              import json
+              import boto3
+              
+              def lambda_handler(event, context):
+              
+                  data = json.loads(event["body"])
+              
+                  dynamodb = boto3.resource('dynamodb')
+              
+                  table = dynamodb.Table('People')
+              
+                  print(f"Writing item: {data}")
+                  response = table.put_item(
+                      Item={
+                          'user_id': data["user_id"],
+                          'first_name': data["first_name"],
+                          'age': data["age"]
+                      }
+                  )
+              
+                  response = {'statusCode': 200,
+                  'body': json.dumps(response)}
+              
+                  return response
+          Handler: index.lambda_handler
+          FunctionName: HelloAWSLambda
+          Description: Hello AWS function
+          Role: !GetAtt LambdaDemoRole.Arn 
+          Runtime: python3.8
+          Tags: 
+          - Key: user
+            Value: matthew.holmes.labs
+          TracingConfig:
+              Mode: Active
+    
+    DemoLambdaPermission:
+      Type: AWS::Lambda::Permission
+      Properties: 
+        Action: lambda:InvokeFunction
+        FunctionName: !GetAtt HelloAWSFunction.Arn
+        Principal: apigateway.amazonaws.com
+        SourceArn: !Sub 'arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${DemoRestApi}/*/*'
+
+    DemoRestApi:
+      Type: 'AWS::ApiGateway::RestApi'
+      Properties:
+        Description: A test API
+        Name: DemoRestAPI
+        EndpointConfiguration:
+          Types: 
+          - REGIONAL
+        Tags: 
+        - Key: user
+          Value: matthew.holmes.labs
+    
+    DemoGetMethod:
+      Type: 'AWS::ApiGateway::Method'
+      Properties:
+        RestApiId: !Ref DemoRestApi
+        ResourceId: !GetAtt DemoRestApi.RootResourceId
+        HttpMethod: GET                 
+        AuthorizationType: NONE
+        Integration:
+          Type: AWS_PROXY          
+          IntegrationHttpMethod: POST
+          Uri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${HelloAWSFunction.Arn}/invocations
+          
+    DemoApiGatewayDeployment:
+      DependsOn: DemoGetMethod 
+      Type: AWS::ApiGateway::Deployment
+      Properties:
+        RestApiId: !Ref DemoRestApi
+        Description: Demo deployment
+        StageName: staging
+          
+    # Logging and Monitoring
+    DemoTrail:
+      Type: AWS::CloudTrail::Trail
+      Properties: 
+        #CloudWatchLogsLogGroupArn: !GetAtt LogGroup.Arn
+        #CloudWatchLogsRoleArn: !GetAtt LogRole.Arn
+        EventSelectors: 
+        - DataResources: 
+            - Type:  AWS::S3::Object
+              Values: 
+                -  arn:aws:s3:::matthew.holmes.eventsbucket/
+          IncludeManagementEvents: true
+          ReadWriteType: All
+        IsLogging: true
+        S3BucketName: holmes-test-trail-bucket
+        Tags: 
+        - Key: user
+          Value: matthew.holmes.labs
+        TrailName: holmes-trail
+          
+    DemoCloudWatch:
+      Type: AWS::IAM::Role
+      Properties: 
+        ManagedPolicyArns:
+          - arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy
+          - arn:aws:iam::aws:policy/service-role/AmazonEC2RoleforSSM
+        AssumeRolePolicyDocument: 
+          Version: "2012-10-17"
+          Statement: 
+            - Effect: "Allow"
+              Principal: 
+                Service: 
+                - "cloudtrail.amazonaws.com"
+              Action: 
+              - "sts:AssumeRole"
+              
+    DemoEventBridgeRule:
+      Type: AWS::Events::Rule
+      Properties: 
+        Description: write s3 putOject logs to cloudwatch
+        EventPattern: 
+          source:
+          - aws.s3
+          detail-type:
+          - "AWS API Call via CloudTrail"
+          detail:
+            eventSource:
+            - s3.amazonaws.com
+            eventName:
+            - PutObject
+            requestParameters:
+              bucketName:
+              - matthew.holmes.eventsbucket
+        Name: holmes-eventbridge-s3-rule
+        State: ENABLED
+        Targets: 
+          - Arn: !GetAtt HelloAWSFunction.Arn
+            Id: lambda-001
+
+    LambdaInvokePermissionForEvents:
+      Type: AWS::Lambda::Permission
+      Properties:
+        FunctionName: !GetAtt HelloAWSFunction.Arn
+        Action: "lambda:InvokeFunction"
+        Principal: "events.amazonaws.com"
+        SourceArn: !GetAtt DemoEventBridgeRule.Arn
+
+    LogGroup: 
+      Type: AWS::Logs::LogGroup
+      Properties: 
+        LogGroupName: !Sub "${AWS::StackName}"
+        RetentionInDays: 7
+
+    LambdaLogGroup: 
+      Type: AWS::Logs::LogGroup
+      Properties: 
+        LogGroupName: !Sub "/aws/lambda/${AWS::StackName}"
+        RetentionInDays: 7
+        
+    LogRole:
+      Type: AWS::IAM::Role
+      Properties:
+        AssumeRolePolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+            - Effect: Allow
+              Principal:
+                Service:
+                  - cloudtrail.amazonaws.com
+              Action:
+                - 'sts:AssumeRole'
+
+Outputs:
+  RestApiID:
+    Description: REST API id
+    Value: !Ref DemoRestApi
+  RootResourceID:
+    Description: Root resource id
+    Value: !GetAtt DemoRestApi.RootResourceId
