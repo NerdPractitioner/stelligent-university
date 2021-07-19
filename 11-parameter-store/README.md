@@ -121,6 +121,8 @@ entire subtree with a single query.
 _When you look at your stack in the CloudFormation console, can you find
 the values of your parameter resources there?_
 
+> !GetAtt Param.Value lets you do this
+
 #### Lab 11.1.3: Integration with CloudFormation
 
 CloudFormation can use Parameter Store keys and values as
@@ -197,10 +199,14 @@ Read [Using Dynamic References to Specify Template Values](https://docs.aws.amaz
 Why can't you use that feature directly to read "middle-name" and show it
 in your web page?
 
+> It looks like we can but it is can be dangerous as it may leak secret keys
+
 #### Question 2
 
 Can you use Secure String as an `AWS::SSM::Parameter::Value` type in a
 CloudFormation stack?
+
+> No
 
 ## Further Reading
 
