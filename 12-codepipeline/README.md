@@ -122,6 +122,12 @@ them, including the CFN resources you need:
 _Is executing a CloudFormation template a legitimate example of an
 "application"? Provide an explanation._
 
+> I think it could be argued that this is an application.
+depending on the definition if you use the following definition:
+"a computer software package that performs a specific function directly for
+an end user or, in some cases, for another application"
+Then I would say yes, this is a package that performs a function for another application
+
 #### Question: Pipeline Template
 
 _Is your Pipeline template portable? Update and re-create your Pipeline if
@@ -146,6 +152,10 @@ pipeline stack and use the created roles to recreate the missing role
 for your orphaned bucket stack. To help avoid this in the future it's a
 good idea to define your roles in a separate stack and use the outputs
 in your other stacks.
+
+> I'm unable to delete the bucket stack initially but recreating the stack does allow it. 
+
+
 
 ## Lesson 12.2: Pipelines Support Infrastructure as Code
 
