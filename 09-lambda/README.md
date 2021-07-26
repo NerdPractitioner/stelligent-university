@@ -177,6 +177,10 @@ Write another Lambda function that will query the DynamoDB table:
 *Can you think of practical ways an organization can use Lambda in
 reaction to AWS resource changes?*
 
+> There are many ways lambda can be used in reaction to resource
+changes. One example might be processing data as it is entered into 
+dynamodb or kinesis streams.
+
 ## Further Reading
 
 - Read about [Capital One's Cloud Custodian project](https://stelligent.com/2017/05/15/cloud-custodian-cleans-up-your-cloud-clutter/)

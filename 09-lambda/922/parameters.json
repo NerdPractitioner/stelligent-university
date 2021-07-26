@@ -1,0 +1,14 @@
+[
+    {
+        "ParameterKey": "LogGroupName",
+        "ParameterValue": "holmes-lambda-lab"
+    },
+    {
+        "ParameterKey": "LogBucketName",
+        "ParameterValue": "matthew.holmes.eventsbucket"
+    },
+    {
+        "ParameterKey": "DataBucketName",
+        "ParameterValue": "holmes-test-trail-bucket"
+    }
+]
