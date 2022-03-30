@@ -1,0 +1,36 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: >
+  Create a CFN template that describes two resources, an IAM User, and an
+  IAM Managed Policy that controls that user.
+Parameters: 
+  UserName:
+    Type: String
+    Default: ''
+Resources: 
+  DemoUser:
+    Type: AWS::IAM::User
+    Properties: 
+      UserName: !Ref UserName
+  DemoPolicy:
+    Type: AWS::IAM::ManagedPolicy
+    Properties: 
+      Description: Allows read only to all S3 buckets 
+      ManagedPolicyName: holmesdemolab
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Action:
+              - s3:ListBucket
+              - s3:GetObject*
+            Resource:
+              - arn:aws:s3:::*
+              - arm:aws:s3:::*/*
+      Users: 
+        - !Ref DemoUser
+Outputs:
+  PolicyARN:
+    Description: The ARN of the created IAM policy
+    Value: !Ref DemoPolicy
+    Export:
+      Name: !Join [ "-", [ !Ref "AWS::StackName", 'policy-arn' ] ]

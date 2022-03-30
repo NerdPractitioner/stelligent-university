@@ -1,0 +1,25 @@
+
+Description: >
+  Update the same template one final time. This time, use a CloudFormation
+  [Condition] to add a prefix to the name of the bucket. When the current execution
+  region is your preferred region, prefix the bucket name with the
+  Account ID. When executing in all other regions, use the region
+  name.
+Parameters:
+  S3BucketName:
+    Type: String 
+    
+Conditions:
+  BuildByRegion: !Equals
+    - !Ref AWS::Region 
+    - us-west-2
+Resources:
+  S3LabBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+        BucketName:
+          !Join
+            - ""
+            - - !If [BuildByRegion, !Ref AWS::AccountId, !Ref AWS::Region] 
+              - !Ref S3BucketName
+              

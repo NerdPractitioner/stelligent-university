@@ -1,0 +1,19 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description:  > 
+  Create a *new* CFN template that describes an IAM User and applies to it 
+  the Managed Policy ARN created by and exported from the previous Stack.
+Parameters: 
+  UserName:
+    Type: String
+    Default: ''
+  StackPolicy:
+    Type: String
+    Default: ''
+Resources: 
+  DemoUser:
+    Type: AWS::IAM::User
+    Properties: 
+      UserName: !Ref UserName
+      ManagedPolicyArns:
+        - !ImportValue 
+          Fn::Sub: '${StackPolicy}-policy-arn'

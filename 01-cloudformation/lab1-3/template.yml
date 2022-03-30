@@ -1,0 +1,14 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: >
+  Create a single script that re-uses one CloudFormation template to
+  deploy _a single S3 bucket_.
+Resources:
+  DemoBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Join ['-', [!Ref AWS::Region, !Ref AWS::AccountId, !Ref BucketName]]
+Parameters:
+  BucketName:
+    Description: The name of the bucket
+    Type: String
+    Default: 'unassigned'
