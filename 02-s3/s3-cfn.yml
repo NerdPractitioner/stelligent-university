@@ -1,0 +1,73 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: 'S3 bucket CFN template for stelligent-u'
+Metadata:
+  SupportedResources: 'S3'
+Parameters:
+  BucketNameParam:
+    Type: String
+    Description: 'Friendly name for s3 bucket'
+    Default: 'holmes-demo-bucket'
+Resources:
+  DemoBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Join ['-', [!Ref AWS::Region, !Ref AWS::AccountId, !Ref BucketNameParam]]
+      BucketEncryption: 
+        ServerSideEncryptionConfiguration:
+          - BucketKeyEnabled: true
+            ServerSideEncryptionByDefault:
+              SSEAlgorithm: 'aws:kms'
+              KMSMasterKeyID: !Ref DemoKey
+      VersioningConfiguration:
+        Status: Enabled
+      LifecycleConfiguration:
+        Rules:
+          - Id: StandardObjects
+            Status: Enabled
+            Transitions:
+              - TransitionInDays: 30
+                StorageClass: STANDARD_IA
+              - TransitionInDays: 90
+                StorageClass: GLACIER
+            NoncurrentVersionExpirationInDays: 7
+            AbortIncompleteMultipartUpload:
+              DaysAfterInitiation: 1
+  PublicReadBucketPolicy:
+    Type: 'AWS::S3::BucketPolicy'
+    Properties:
+      Bucket: !Ref DemoBucket
+      PolicyDocument:
+        Statement:
+          - Action:
+              - 's3:GetObject'
+            Effect: Allow
+            Resource: !Join
+              - ''
+              - - 'arn:aws:s3:::'
+                - !Ref DemoBucket
+                - /*
+            Principal: '*'
+            
+  DemoKey:
+    Type: AWS::KMS::Key
+    Properties:
+      Enabled: true
+      Description: Holmes s3 demo work
+      KeyPolicy:
+        Version: "2012-10-17"
+        Id: 'default-key'
+        Statement:
+        - Sid: Enable IAM policies
+          Effect: Allow
+          Principal:
+            AWS: 324320755747
+          Action: kms:*
+          Resource: "*"
+  TheKeyAlias:
+    Type: AWS::KMS::Alias
+    Properties: 
+      AliasName: holmesdemos3key
+      TargetKeyId: !Ref DemoKey
+            
+            
+            
